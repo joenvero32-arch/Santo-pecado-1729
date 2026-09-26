@@ -634,13 +634,14 @@ if(product.name==="Pecado Original"){
   product.image="https://raw.githubusercontent.com/joenvero32-arch/Santo-pecado-1729/refs/heads/principal/close_up_high_detail_food_product_photo_menu_st.png";
 }
       card.innerHTML=
-  (product.image
-    ? '<img src="'+product.image+'" style="width:100%;height:220px;object-fit:cover;display:block;">'
-    : '<div style="width:100%;height:220px;background:#222;display:flex;align-items:center;justify-content:center;font-size:70px;">🍟</div>'
-  )+
-  '<div class="sp-info">'+
-  '<strong>'+product.name+'</strong>'+
-  '<span>'+money(product.price)+'</span>'+
+(product.image
+  ? '<img src="'+product.image+'" style="width:100%;height:220px;object-fit:cover;display:block;">'
+  : '')+
+'<div class="sp-info">'+
+'<strong>'+product.name+'</strong>'+
+'<span>'+money(product.price)+'</span>'+
+'</div>'+
+'<button class="sp-btn">+</button>';
   '</div>'+
   '<button class="sp-btn">+</button>';
       
