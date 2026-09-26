@@ -629,6 +629,14 @@ function render(){
 
       let card=document.createElement("div");
       card.className="sp-product";
+     if(product.name==="Pecado Original"){
+  let img=document.createElement("img");
+  img.src="https://raw.githubusercontent.com/joenvero32-arch/Santo-pecado-1729/refs/heads/principal/close_up_high_detail_food_product_photo_menu_st.png";
+  img.style.width="100%";
+  img.style.height="220px";
+  img.style.objectFit="cover";
+  card.appendChild(img);
+     } 
 
       card.innerHTML=
   (product.image
