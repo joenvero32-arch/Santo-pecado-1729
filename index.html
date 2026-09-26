@@ -338,6 +338,493 @@ textarea{
   <main>
     <h1>PECA POR EL SABOR</h1>
     <p>Haz tu pedido fácil, rápido y delicioso.</p>
+    <h2>LA GULA — CAJAS DE PAPAS</h2>
+    <div>Pecado Original — $12.000</div>
+    <div>Papas Caleñas — La Bandida — $16.000</div>
+    <div>Papas Caleñas / La Bandida — $16.000</div>
+    <div>Papas Rancheras / La Pecadora — $18.000</div>
+    <div>Papas 17-29 Familiar — $30.000</div>
+    <div>Papas Costeñas / La Divina — $20.000</div>
+    <h2>LA TENTACIÓN — PERROS</h2>
+    <div>El Inocente — $14.000</div>
+    <div>El Hereje — $17.000</div>
+    <div>El Condenado — $18.000</div>
+    <div>El Pecador — $19.000</div>
+    <h2>EL PECADO — PERRAS</h2>
+    <div>La Perra Preñada — $22.000</div>
+    <div>La Perra Bandida — $24.000</div>
+    <h2>HAMBURGUESAS</h2>
+    <div>Santo Pecado — $22.000</div>
+    <div>La Tentación — $28.000</div>
+    <div>La Interesada — $34.000</div>
+    <h2>AREPAS</h2>
+    <div>La Bendición — $18.000</div>
+    <div>La Confesión — $19.000</div>
+    <div>La Consagrada — $15.000</div>
+    <div>La Revelada — $20.000</div>
+    <div>El Milagro — $22.000</div>
+    <div>La Revelada — $20.000</div>
+    <div>La Excomulgada — $22.000</div>
+    <div>La Ardiente — $22.000</div>
+    <div>La Pasión — $22.000</div>
+    <div>La Infernal — $22.000</div>
+    <div>La Caprichosa — $22.000</div>
+    <div>La Condenación — $22.000</div>
+    <h2>BEBIDAS</h2>
+    <div>Gaseosa — $5.000</div>
+    <div>Agua — $4.000</div>
+    <h2>CERVEZAS</h2>
+    <div>Cerveza — $5.000</div>
+    <h2>ADICIONES</h2>
+    
   </main>
+</body>
+  <style>
+.sp-product{
+  background:#fff;
+  border-radius:14px;
+  padding:14px;
+  margin:10px 0;
+  box-shadow:0 3px 12px #00000012;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:10px;
+}
+.sp-info strong{display:block;font-size:17px}
+.sp-info span{display:block;margin-top:5px;font-weight:bold;color:#b88624}
+.sp-btn{
+  border:0;
+  background:#111;
+  color:#fff;
+  border-radius:10px;
+  padding:10px 15px;
+  font-weight:bold;
+}
+.sp-cart{
+  position:fixed;
+  bottom:15px;
+  left:12px;
+  right:12px;
+  background:#111;
+  color:#fff;
+  padding:15px;
+  border-radius:15px;
+  z-index:999;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  box-shadow:0 5px 20px #0005;
+}
+.sp-admin{
+  position:fixed;
+  right:15px;
+  top:80px;
+  z-index:1000;
+  border:0;
+  border-radius:50%;
+  width:48px;
+  height:48px;
+  background:#d6a84f;
+  font-size:21px;
+}
+.sp-modal{
+  position:fixed;
+  inset:0;
+  background:#0009;
+  z-index:2000;
+  display:none;
+  overflow:auto;
+  padding:20px;
+}
+.sp-box{
+  background:#fff;
+  border-radius:18px;
+  padding:20px;
+  max-width:600px;
+  margin:30px auto;
+}
+.sp-box input,.sp-box select{
+  width:100%;
+  padding:12px;
+  margin:6px 0 12px;
+  border:1px solid #ccc;
+  border-radius:9px;
+}
+.sp-row{
+  display:flex;
+  gap:8px;
+  align-items:center;
+  margin-bottom:8px;
+}
+.sp-row button{
+  border:0;
+  border-radius:8px;
+  padding:8px 10px;
+}
+.sp-total{
+  font-size:20px;
+  font-weight:bold;
+  margin:15px 0;
+}
+.sp-green{
+  width:100%;
+  background:#168c45;
+  color:#fff;
+  border:0;
+  padding:14px;
+  border-radius:10px;
+  font-weight:bold;
+}
+</style>
+
+<script>
+(function(){
+
+const WHATSAPP="573116637215";
+const PIN="1729";
+
+let saved=localStorage.getItem("sp_menu");
+
+let menu;
+
+if(saved){
+  menu=JSON.parse(saved);
+}else{
+  menu=[];
+
+  document.querySelectorAll("main h2").forEach(function(title){
+    let category=title.textContent.trim();
+    let node=title.nextElementSibling;
+
+    while(node && node.tagName==="DIV"){
+      let text=node.textContent.trim();
+      let parts=text.split("—");
+      let name=parts[0].trim();
+      let price=parseInt((parts[1]||"0").replace(/\D/g,""))||0;
+
+      menu.push({
+        id:Date.now()+Math.random(),
+        category:category,
+        name:name,
+        price:price,
+        active:true
+      });
+
+      node=node.nextElementSibling;
+    }
+  });
+
+  localStorage.setItem("sp_menu",JSON.stringify(menu));
+}
+
+let cart=[];
+
+function money(n){
+  return "$"+Number(n).toLocaleString("es-CO");
+}
+
+function save(){
+  localStorage.setItem("sp_menu",JSON.stringify(menu));
+}
+
+function render(){
+
+  let main=document.querySelector("main");
+  main.innerHTML="";
+
+  let categories=[...new Set(menu.filter(p=>p.active).map(p=>p.category))];
+
+  categories.forEach(function(category){
+
+    let h=document.createElement("h2");
+    h.textContent=category;
+    main.appendChild(h);
+
+    menu.filter(p=>p.active && p.category===category)
+    .forEach(function(product){
+
+      let card=document.createElement("div");
+      card.className="sp-product";
+
+      card.innerHTML=
+        '<div class="sp-info">'+
+        '<strong>'+product.name+'</strong>'+
+        '<span>'+money(product.price)+'</span>'+
+        '</div>'+
+        '<button class="sp-btn">+</button>';
+
+      card.querySelector("button").onclick=function(){
+        add(product);
+      };
+
+      main.appendChild(card);
+    });
+  });
+
+  updateCart();
+}
+
+function add(product){
+
+  let item=cart.find(x=>x.id===product.id);
+
+  if(item){
+    item.qty++;
+  }else{
+    cart.push({
+      id:product.id,
+      name:product.name,
+      price:product.price,
+      qty:1
+    });
+  }
+
+  updateCart();
+}
+
+function updateCart(){
+
+  let old=document.querySelector(".sp-cart");
+
+  if(old) old.remove();
+
+  let totalQty=cart.reduce((a,b)=>a+b.qty,0);
+  let total=cart.reduce((a,b)=>a+b.price*b.qty,0);
+
+  if(totalQty===0) return;
+
+  let bar=document.createElement("div");
+  bar.className="sp-cart";
+
+  bar.innerHTML=
+    '<span>🛒 '+totalQty+' productos</span>'+
+    '<strong>'+money(total)+'</strong>'+
+    '<button class="sp-btn">VER PEDIDO</button>';
+
+  bar.querySelector("button").onclick=openCart;
+
+  document.body.appendChild(bar);
+}
+
+function openCart(){
+
+  let modal=document.createElement("div");
+  modal.className="sp-modal";
+  modal.style.display="block";
+
+  let total=cart.reduce((a,b)=>a+b.price*b.qty,0);
+
+  let html=
+    '<div class="sp-box">'+
+    '<h2>🛒 Tu pedido</h2>';
+
+  cart.forEach(function(item){
+
+    html+=
+      '<div class="sp-row">'+
+      '<span style="flex:1">'+item.name+'</span>'+
+      '<button data-minus="'+item.id+'">−</button>'+
+      '<b>'+item.qty+'</b>'+
+      '<button data-plus="'+item.id+'">+</button>'+
+      '<b>'+money(item.price*item.qty)+'</b>'+
+      '</div>';
+  });
+
+  html+=
+    '<div class="sp-total">TOTAL: '+money(total)+'</div>'+
+    '<input id="spName" placeholder="Nombre">'+
+    '<input id="spPhone" placeholder="Teléfono">'+
+    '<textarea id="spAddress" placeholder="Dirección o número de mesa" style="width:100%;min-height:70px"></textarea>'+
+    '<textarea id="spNotes" placeholder="Observaciones" style="width:100%;min-height:70px"></textarea>'+
+    '<button class="sp-green" id="sendOrder">ENVIAR PEDIDO POR WHATSAPP</button>'+
+    '<button class="sp-btn" id="closeCart" style="margin-top:10px;width:100%">CERRAR</button>'+
+    '</div>';
+
+  modal.innerHTML=html;
+  document.body.appendChild(modal);
+
+  modal.querySelector("#closeCart").onclick=function(){
+    modal.remove();
+  };
+
+  modal.querySelectorAll("[data-minus]").forEach(function(btn){
+    btn.onclick=function(){
+      let id=Number(btn.dataset.minus);
+      let item=cart.find(x=>x.id==id);
+
+      if(item) item.qty--;
+
+      cart=cart.filter(x=>x.qty>0);
+
+      modal.remove();
+      openCart();
+      updateCart();
+    };
+  });
+
+  modal.querySelectorAll("[data-plus]").forEach(function(btn){
+    btn.onclick=function(){
+      let id=Number(btn.dataset.plus);
+      let item=cart.find(x=>x.id==id);
+
+      if(item) item.qty++;
+
+      modal.remove();
+      openCart();
+      updateCart();
+    };
+  });
+
+  modal.querySelector("#sendOrder").onclick=function(){
+
+    let name=document.querySelector("#spName").value.trim();
+    let phone=document.querySelector("#spPhone").value.trim();
+    let address=document.querySelector("#spAddress").value.trim();
+    let notes=document.querySelector("#spNotes").value.trim();
+
+    if(!name){
+      alert("Escribe tu nombre");
+      return;
+    }
+
+    let message="🍔 *SANTO PECADO 17-29*%0A%0A";
+    message+="👤 Cliente: "+name+"%0A";
+    message+="📱 Teléfono: "+phone+"%0A";
+    message+="📍 Dirección/Mesa: "+address+"%0A%0A";
+    message+="*PEDIDO:*%0A";
+
+    cart.forEach(function(item){
+      message+=item.qty+" x "+item.name+" — "+money(item.price*item.qty)+"%0A";
+    });
+
+    message+="%0A💰 *TOTAL: "+money(total)+"*%0A";
+
+    if(notes){
+      message+="%0A📝 Observaciones: "+notes;
+    }
+
+    window.open(
+      "https://wa.me/"+WHATSAPP+"?text="+message,
+      "_blank"
+    );
+  };
+}
+
+function admin(){
+
+  let pin=prompt("PIN de administrador:");
+
+  if(pin!==PIN){
+    alert("PIN incorrecto");
+    return;
+  }
+
+  let modal=document.createElement("div");
+  modal.className="sp-modal";
+  modal.style.display="block";
+
+  let html=
+    '<div class="sp-box">'+
+    '<h2>⚙️ Administración</h2>'+
+    '<button class="sp-green" id="newProduct">➕ NUEVO PRODUCTO</button>'+
+    '<br><br>';
+
+  menu.forEach(function(product){
+
+    html+=
+      '<div class="sp-row">'+
+      '<input value="'+product.name+'" data-name="'+product.id+'" style="flex:2">'+
+      '<input value="'+product.price+'" data-price="'+product.id+'" type="number" style="width:110px">'+
+      '<button data-save="'+product.id+'">💾</button>'+
+      '<button data-delete="'+product.id+'">🗑️</button>'+
+      '</div>';
+  });
+
+  html+=
+    '<button class="sp-btn" id="closeAdmin" style="width:100%;margin-top:15px">CERRAR</button>'+
+    '</div>';
+
+  modal.innerHTML=html;
+  document.body.appendChild(modal);
+
+  modal.querySelector("#closeAdmin").onclick=function(){
+    modal.remove();
+  };
+
+  modal.querySelector("#newProduct").onclick=function(){
+
+    let category=prompt("Categoría:");
+
+    if(!category) return;
+
+    let name=prompt("Nombre del producto:");
+
+    if(!name) return;
+
+    let price=prompt("Precio:");
+
+    if(!price) return;
+
+    menu.push({
+      id:Date.now(),
+      category:category,
+      name:name,
+      price:Number(price),
+      active:true
+    });
+
+    save();
+    modal.remove();
+    render();
+    admin();
+  };
+
+  modal.querySelectorAll("[data-save]").forEach(function(btn){
+
+    btn.onclick=function(){
+
+      let id=Number(btn.dataset.save);
+      let product=menu.find(p=>p.id==id);
+
+      product.name=modal.querySelector("[data-name='"+id+"']").value;
+      product.price=Number(modal.querySelector("[data-price='"+id+"']").value);
+
+      save();
+
+      alert("Producto actualizado");
+      render();
+    };
+  });
+
+  modal.querySelectorAll("[data-delete]").forEach(function(btn){
+
+    btn.onclick=function(){
+
+      if(!confirm("¿Eliminar este producto?")) return;
+
+      let id=Number(btn.dataset.delete);
+
+      menu=menu.filter(p=>p.id!=id);
+
+      save();
+
+      modal.remove();
+      render();
+      admin();
+    };
+  });
+}
+
+let adminButton=document.createElement("button");
+adminButton.className="sp-admin";
+adminButton.textContent="⚙️";
+adminButton.onclick=admin;
+document.body.appendChild(adminButton);
+
+render();
+
+})();
+  </script>
 </body>
 </html>
