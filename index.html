@@ -631,11 +631,16 @@ function render(){
       card.className="sp-product";
 
       card.innerHTML=
-        '<div class="sp-info">'+
-        '<strong>'+product.name+'</strong>'+
-        '<span>'+money(product.price)+'</span>'+
-        '</div>'+
-        '<button class="sp-btn">+</button>';
+  (product.image
+    ? '<img src="'+product.image+'" style="width:100%;height:220px;object-fit:cover;display:block;">'
+    : '<div style="width:100%;height:220px;background:#222;display:flex;align-items:center;justify-content:center;font-size:70px;">🍟</div>'
+  )+
+  '<div class="sp-info">'+
+  '<strong>'+product.name+'</strong>'+
+  '<span>'+money(product.price)+'</span>'+
+  '</div>'+
+  '<button class="sp-btn">+</button>';
+      
 
       card.querySelector("button").onclick=function(){
         add(product);
