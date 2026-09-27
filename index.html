@@ -817,6 +817,46 @@ function admin(){
 }
 
 let adminButton=document.createElement("button");
+  async function subirFotoProducto(productId, archivo){
+  if(!archivo) return;
+
+  try{
+    const formData=new FormData();
+    formData.append("files",archivo);
+
+    const respuesta=await fetch(
+      "https://santo-pecado-fotos.joenvero32.workers.dev/upload",
+      {
+        method:"POST",
+        body:formData
+      }
+    );
+
+    const resultado=await respuesta.json();
+
+    if(!resultado.success){
+      alert("No se pudo subir la foto");
+      return;
+    }
+
+    const producto=menu.find(p=>p.id==productId);
+
+    if(!producto){
+      alert("Producto no encontrado");
+      return;
+    }
+
+    producto.photo=resultado.files[0].url;
+
+    save();
+
+    alert("Foto actualizada");
+    render();
+
+  }catch(error){
+    alert("Error al subir la foto");
+  }
+}
 adminButton.className="sp-admin";
 adminButton.textContent="⚙️";
 adminButton.onclick=admin;
